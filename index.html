@@ -6,9 +6,10 @@
   <meta name="theme-color" content="#101215" />
   <title>StratForge</title>
   <meta name="description" content="Fit 1206 bullets and prepare EPB or OPB content for official-form PDF export." />
-  <link rel="stylesheet" href="./styles.css?v=1.1.0" />
+  <link rel="stylesheet" href="./styles.css?v=1.1.1" />
 </head>
 <body>
+  <aside class="data-disclaimer" aria-label="Data safety notice"><strong>Not cleared for CUI or PII.</strong> Do not enter, upload, or store Controlled Unclassified Information or Personally Identifiable Information.</aside>
   <header class="topbar">
     <div class="brand-block">
       <a class="brand" href="#">Strat<span>Forge</span></a>
@@ -190,7 +191,6 @@
         <section id="drawer-settings" class="drawer-panel" role="tabpanel" hidden>
           <div class="drawer-section"><h3>Appearance</h3>
             <div class="color-settings"><label for="backgroundColor">Background color<input id="backgroundColor" type="color" value="#101215" /></label><label for="accentColor">Accent color<input id="accentColor" type="color" value="#58a6ff" /></label></div>
-            <label class="night-setting" for="nightHue"><span>Dimmer</span><output id="nightHueOutput">0%</output><input id="nightHue" type="range" min="0" max="100" step="1" value="0" /></label>
             <button class="secondary reset-settings" id="resetSettings" type="button">Reset appearance</button>
           </div>
           <div class="drawer-section account-settings" id="accountSettingsSection">
@@ -203,6 +203,7 @@
             </form>
             <button class="secondary" id="settingsSignIn" type="button">Sign in</button>
             <button class="secondary" id="accountSignOut" type="button" hidden>Sign out</button>
+            <a class="source-link" href="https://afbulletshitter.github.io/legacy.html">Recover browser-only work from the previous address</a>
           </div>
         </section>
       </div>
@@ -231,9 +232,9 @@
     <p class="account-status" id="importSummary">You have work from before you signed in.</p>
     <div class="account-form"><button class="primary" id="importGuestWork" type="button">Import to my account</button><button class="secondary" id="skipGuestImport" type="button">Not now</button><p class="form-note">Choosing “Not now” keeps the browser copy intact. It will reappear when you sign out.</p></div>
   </dialog>
-  <div class="night-light-overlay" id="nightLightOverlay" aria-hidden="true"></div><div id="measureBox" aria-hidden="true"></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div id="measureBox" aria-hidden="true"></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./auth-config.js"></script>
   <script src="./vendor/pdf-lib.min.js"></script>
-  <script src="./app.js?v=1.1.0"></script>
+  <script src="./app.js?v=1.1.1"></script>
 </body>
 </html>

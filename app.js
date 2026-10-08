@@ -346,14 +346,13 @@ $('#alqZoomIn').addEventListener('click',()=>setAlqZoom(alqZoom+25));$('#alqZoom
 setDrawer(true);
 
 const APPEARANCE_KEY='bullet-shitter-appearance-v1';
-const DEFAULT_APPEARANCE={background:'#101215',accent:'#58a6ff',nightHue:0};
+const DEFAULT_APPEARANCE={background:'#101215',accent:'#58a6ff'};
 let appearance={...DEFAULT_APPEARANCE};
 function validColor(value){return typeof value==='string'&&/^#[0-9a-f]{6}$/i.test(value)}
 function restoreAppearance(stored){
   if(!stored||typeof stored!=='object')return;
   if(validColor(stored.background))appearance.background=stored.background;
   if(validColor(stored.accent))appearance.accent=stored.accent;
-  const level=Number(stored.nightHue);if(Number.isFinite(level))appearance.nightHue=Math.min(100,Math.max(0,level));
 }
 try{restoreAppearance(JSON.parse(localStorage.getItem(APPEARANCE_KEY)||'{}'))}catch{}
 function colorLuminance(hex){const channels=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*channels[0]+.7152*channels[1]+.0722*channels[2]}
@@ -366,16 +365,12 @@ function applyAppearance(sync=true){
   style.setProperty('--sf-ink',readableInk(appearance.background));style.setProperty('--sf-accent-ink',readableInk(appearance.accent));
   style.setProperty('--sf-surface-mix',dark?'white':'black');
   document.documentElement.style.removeProperty('filter');
-  $('#nightLightOverlay').style.opacity=String(appearance.nightHue/100*.8);
-  $('#nightLightOverlay').style.mixBlendMode='normal';
   $('#backgroundColor').value=appearance.background;$('#accentColor').value=appearance.accent;
-  $('#nightHue').value=String(appearance.nightHue);$('#nightHueOutput').textContent=`${appearance.nightHue}%`;
   try{localStorage.setItem(APPEARANCE_KEY,JSON.stringify(appearance))}catch{}
   if(sync)schedulePreferenceSync();
 }
 $('#backgroundColor').addEventListener('input',event=>{appearance.background=event.target.value;applyAppearance()});
 $('#accentColor').addEventListener('input',event=>{appearance.accent=event.target.value;applyAppearance()});
-$('#nightHue').addEventListener('input',event=>{appearance.nightHue=Number(event.target.value);applyAppearance()});
 $('#resetSettings').addEventListener('click',()=>confirmAction($('#resetSettings'),'Confirm reset',()=>{appearance={...DEFAULT_APPEARANCE};applyAppearance();notify('Appearance reset')}));
 applyAppearance(false);
 
@@ -788,7 +783,7 @@ let preferenceSyncTimer=null;
 function schedulePreferenceSync(){if(!sessionUser())return;clearTimeout(preferenceSyncTimer);preferenceSyncTimer=setTimeout(()=>void saveAccountPreferences().catch(()=>{}),500)}
 async function saveAccountPreferences(){
   const user=sessionUser();if(!user)return false;
-  const body={user_id:user.id,display_name:displayNameFor(user),preferences:{theme:appearance.theme,background:appearance.background,accent:appearance.accent,nightHue:appearance.nightHue,workspaceDraft},updated_at:new Date().toISOString()};
+  const body={user_id:user.id,display_name:displayNameFor(user),preferences:{theme:appearance.theme,background:appearance.background,accent:appearance.accent,workspaceDraft},updated_at:new Date().toISOString()};
   const task=preferenceSyncChain.catch(()=>{}).then(async()=>{if(sessionUser()?.id!==user.id)return false;await dataRequest('profiles',{method:'POST',query:'on_conflict=user_id',body,prefer:'resolution=merge-duplicates'});return true});preferenceSyncChain=task;return task;
 }
 function guestWorkSnapshot(){
@@ -927,3 +922,5 @@ window.addEventListener('pagehide',()=>persistWorkspaceDraft(false));
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistWorkspaceDraft()});
 void consumeAuthCallback().then(consumed=>{if(!consumed)return restoreAccountSession()});
 window.addEventListener('online',()=>{void retryPendingSync();if(sessionUser())void saveAccountPreferences().catch(()=>{})});
+const chromeObserver=new ResizeObserver(()=>{const header=document.querySelector('.topbar');document.documentElement.style.setProperty('--site-chrome-height',`${header.offsetTop+header.offsetHeight}px`)});
+chromeObserver.observe(document.querySelector('.topbar'));chromeObserver.observe(document.querySelector('.data-disclaimer'));
