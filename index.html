@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101215" />
   <title>StratForge</title>
   <meta name="description" content="Fit 1206 bullets and prepare EPB or OPB content for official-form PDF export." />
-  <link rel="stylesheet" href="./styles.css?v=1.1.1" />
+  <link rel="stylesheet" href="./styles.css?v=1.1.2" />
 </head>
 <body>
   <aside class="data-disclaimer" aria-label="Data safety notice"><strong>Not cleared for CUI or PII.</strong> Do not enter, upload, or store Controlled Unclassified Information or Personally Identifiable Information.</aside>
@@ -32,6 +32,7 @@
               <button class="arrow-button" id="undoButton" type="button" aria-label="Undo text change" title="Undo" disabled>↶</button>
               <button class="arrow-button" id="redoButton" type="button" aria-label="Redo text change" title="Redo" disabled>↷</button>
               <button class="clear-confirm-button" id="clearContentsButton" type="button">Clear Contents</button>
+              <button class="secondary auto-spacing-toggle" id="autoSpacingToggle" type="button" aria-pressed="true">Toggle Auto Spacing <span id="autoSpacingState">On</span></button>
             </div>
           </div>
           <div class="paper-shell write-shell"><div class="paper"><textarea aria-label="Write your text" id="sourceText" spellcheck="true" wrap="soft">- Led 12-person team through rapid system upgrade—cut processing time 34% and restored mission capability 2 days early</textarea></div></div>
@@ -235,6 +236,6 @@
   <div id="measureBox" aria-hidden="true"></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./auth-config.js"></script>
   <script src="./vendor/pdf-lib.min.js"></script>
-  <script src="./app.js?v=1.1.1"></script>
+  <script src="./app.js?v=1.1.2"></script>
 </body>
 </html>

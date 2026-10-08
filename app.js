@@ -168,6 +168,9 @@ let DOD_ACRONYMS=[
 ];
 
 let currentOutput='';
+const AUTO_SPACING_KEY='stratforge-auto-spacing-v1';
+let autoSpacing=true;
+try{autoSpacing=localStorage.getItem(AUTO_SPACING_KEY)!=='off'}catch{}
 
 function syncPaperScale(){
   document.querySelectorAll('.paper-shell').forEach(shell=>{
@@ -247,7 +250,10 @@ function optimizeSpaces(text){
 }
 
 function render(){
-  const optimized=optimizeSpaces(applyRules(els.source.value));
+  const text=applyRules(els.source.value);
+  const optimized=autoSpacing?optimizeSpaces(text):{text:text.replace(/[\u2004\u2006]/g,' '),result:{fits:true},narrow:0,wide:0};
+  $('#autoSpacingToggle').setAttribute('aria-pressed',String(autoSpacing));
+  $('#autoSpacingState').textContent=autoSpacing?'On':'Off';
   currentOutput=optimized.text;
   const result=optimized.result;
   els.preview.textContent=currentOutput;
@@ -259,10 +265,17 @@ function render(){
   els.box.classList.toggle('over',renderedLines>PREVIEW_LINE_LIMIT);
   els.hint.textContent=renderedLines>PREVIEW_LINE_LIMIT
     ?`Red output exceeds ${PREVIEW_LINE_LIMIT} lines. Shorten the text.`
+    :!autoSpacing
+      ?`Auto spacing off · standard word spaces. Abbreviation rules still apply.`
     :result.fits
       ?`Fits ${FORM_WIDTH_MM} mm · ${optimized.narrow} U+2006 narrowed · ${optimized.wide} U+2004 widened.`
       :`One line still exceeds ${FORM_WIDTH_MM} mm after every safe space was changed to U+2006.`;
 }
+$('#autoSpacingToggle').addEventListener('click',()=>{
+  autoSpacing=!autoSpacing;
+  try{localStorage.setItem(AUTO_SPACING_KEY,autoSpacing?'on':'off')}catch{}
+  render();
+});
 
 function renderAcronymTable(entries,query,results,meta,emptyMessage,metaText,displayLimit=Infinity){
   const term=query.trim().toLowerCase();
